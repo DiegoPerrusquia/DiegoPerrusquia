@@ -1,16 +1,14 @@
-## Hi there 👋
+### Diego Perrusquia
 
-<!--
-**DiegoPerrusquia/DiegoPerrusquia** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+**Offensive Security Engineer | Network Infrastructure**
+eJPTv2 Certified.
 
-Here are some ideas to get you started:
+```ini
+[ OPERATIONAL VECTORS ]
+> Active Directory   :: Kerberos / Domain Dominance / Lateral Movement
+> Web Infrastructure :: Business Logic / API Abuse / Deserialization
+> OS Internals       :: Kernel Exploitation / Memory Analysis / PrivEsc
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+[ WEAPONIZATION & DEV ]
+> Python3            :: Exploit Prototyping / Raw Sockets / Fuzzing
+> Shell / Bash       :: Living off the Land (LOLBins) / C2 Integration
