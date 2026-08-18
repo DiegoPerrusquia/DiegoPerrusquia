@@ -13,9 +13,6 @@
 
     <g font-family="ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, Consolas, monospace">
       <text x="28" y="46" font-size="21" font-weight="600" fill="#c891ff" letter-spacing="1.5">~/ herramientas --activas</text>
-      <rect x="340" y="31" width="10" height="19" fill="#e0338f">
-        <animate attributeName="opacity" values="1;1;0;0" dur="1.1s" repeatCount="indefinite" keyTimes="0;0.5;0.5;1"/>
-      </rect>
       <line x1="28" y1="64" x2="832" y2="64" stroke="#2a1c46" stroke-width="1" stroke-dasharray="3 4"/>
 
       <!-- row 1 -->
