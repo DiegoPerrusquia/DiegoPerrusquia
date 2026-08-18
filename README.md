@@ -23,13 +23,6 @@ Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que 
 <br/>
 
 <div align="center">
-  <img src="assets/tb-herramientas.svg" width="100%" alt="Herramientas de cabecera"/>
-  <img src="assets/herramientas.svg" width="100%" alt="Herramientas activas: Linux, Kali, Burp Suite, Nmap, Active Directory, Wireshark, Docker, PyTorch, Pandas"/>
-</div>
-
-<br/>
-
-<div align="center">
   <img src="assets/tb-numeros.svg" width="100%" alt="En números"/>
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=DiegoPerrusquia&hide_border=true&background=0a0710&ring=a855f7&fire=f43f5e&currStreakNum=c891ff&sideNums=c891ff&currStreakLabel=c891ff&sideLabels=c891ff&dates=a855f7" alt="streak"/>
 </div>
