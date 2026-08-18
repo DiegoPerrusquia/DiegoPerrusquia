@@ -33,17 +33,7 @@ Y hacia donde estoy jalando ahora: datos e IA puestos al servicio del hacking. N
 ## Herramientas de cabecera
 
 <div align="center">
-
-![Linux](https://img.shields.io/badge/Linux-0a0710?style=flat-square&logo=linux&logoColor=c891ff)
-![Kali](https://img.shields.io/badge/Kali-0a0710?style=flat-square&logo=kalilinux&logoColor=c891ff)
-![Burp Suite](https://img.shields.io/badge/Burp_Suite-0a0710?style=flat-square&logo=burpsuite&logoColor=f43f5e)
-![Nmap](https://img.shields.io/badge/Nmap-0a0710?style=flat-square&logo=nmap&logoColor=c891ff)
-![Active Directory](https://img.shields.io/badge/Active_Directory-0a0710?style=flat-square&logo=windows&logoColor=c891ff)
-![Wireshark](https://img.shields.io/badge/Wireshark-0a0710?style=flat-square&logo=wireshark&logoColor=c891ff)
-![Docker](https://img.shields.io/badge/Docker-0a0710?style=flat-square&logo=docker&logoColor=c891ff)
-![PyTorch](https://img.shields.io/badge/PyTorch-0a0710?style=flat-square&logo=pytorch&logoColor=f43f5e)
-![Pandas](https://img.shields.io/badge/Pandas-0a0710?style=flat-square&logo=pandas&logoColor=c891ff)
-
+  <img src="assets/herramientas.svg" width="100%" alt="Herramientas activas: Linux, Kali, Burp Suite, Nmap, Active Directory, Wireshark, Docker, PyTorch, Pandas"/>
 </div>
 
 <br/>
@@ -58,12 +48,7 @@ Y hacia donde estoy jalando ahora: datos e IA puestos al servicio del hacking. N
 
 <div align="center">
 
-<img height="165" src="https://github-readme-stats.vercel.app/api?username=DiegoPerrusquia&show_icons=true&hide_border=true&bg_color=0a0710&title_color=f43f5e&icon_color=c891ff&text_color=c891ff&ring_color=a855f7" alt="stats"/>
-<img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=DiegoPerrusquia&layout=compact&hide_border=true&bg_color=0a0710&title_color=f43f5e&text_color=c891ff&langs_count=8" alt="top langs"/>
-
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=DiegoPerrusquia&hide_border=true&background=0a0710&ring=a855f7&fire=f43f5e&currStreakLabel=c891ff&sideLabels=c891ff&dates=a855f7" alt="streak"/>
-
-<img src="https://github-profile-trophy.vercel.app/?username=DiegoPerrusquia&theme=dracula&no-frame=true&row=1&margin-w=8&column=7" alt="trophies"/>
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=DiegoPerrusquia&hide_border=true&background=0a0710&ring=a855f7&fire=f43f5e&currStreakNum=c891ff&sideNums=c891ff&currStreakLabel=c891ff&sideLabels=c891ff&dates=a855f7" alt="streak"/>
 
 </div>
 
