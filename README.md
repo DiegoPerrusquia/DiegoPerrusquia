@@ -6,15 +6,13 @@
 
 </div>
 
-Ingeniero en redes y telecomunicaciones. La seguridad ofensiva la aprendí por mi cuenta y terminó siendo lo que más me mueve; las dos partes se retroalimentan, porque entender una red desde el protocolo cambia por completo cómo la ataco.
+Ingeniero en redes y telecomunicaciones. Atacarlas no me lo enseñó nadie; eso lo fui sacando por mi cuenta y terminó siendo la parte que más me mueve. Tener clara la red desde el protocolo me cambió la forma de romperla: sé qué debería estar pasando, así que noto rápido lo que no cuadra.
 
-En ofensiva le entro a varias cosas, pero donde tengo más horas encima es en web y en entornos empresariales con Active Directory. Cuando el objetivo deja de ser una sola máquina y se vuelve una organización completa, el tablero cambia: ya no atacas una caja, lees un mapa de confianzas.
+Le entro a lo que se deje, pero donde tengo horas de verdad es en web y en dominios de Active Directory. Cuando el objetivo deja de ser una máquina y pasa a ser una organización entera, el juego cambia — ya no buscas una puerta, lees un mapa de confianzas y decides cuál te lleva más lejos.
 
-También desarrollo. Lo que más disfruto es automatizar — un problema que resuelvo dos veces a mano ya es candidato a convertirse en script — y la parte de front, donde sí me importa cómo queda lo que entrego. Del backend entiendo lo necesario, pero no es donde me quedaría.
+Del otro lado también construyo. Lo que me clava es automatizar: si algo ya lo hice dos veces a mano, la tercera es un script. Y el front, porque me importa cómo se siente usar lo que entrego; el backend lo peleo cuando toca, sin romance. Últimamente ando metiendo datos e IA en la ecuación, para que la máquina correlacione lo que a mí se me pasaría a las tres de la mañana.
 
-Python, Bash y PowerShell para lo ofensivo y la automatización; C++, C# y algo de Go cuando toca bajar de nivel; TypeScript, React y Node del lado del front. Hacia donde voy ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
-
-Try Harder.
+Nada de esto me lo dieron resuelto. Esa es justo la parte que me gusta.
 
 <br/>
 
