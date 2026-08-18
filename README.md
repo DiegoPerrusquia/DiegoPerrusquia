@@ -6,11 +6,11 @@
 
 </div>
 
-Ingeniero en redes y telecomunicaciones. Atacarlas no me lo enseñó nadie; eso lo fui sacando por mi cuenta y terminó siendo la parte que más me mueve. Tener clara la red desde el protocolo me cambió la forma de romperla: sé qué debería estar pasando, así que noto rápido lo que no cuadra.
+Ingeniero en redes y telecomunicaciones. Atacarlas no me lo enseñó nadie: lo aprendí por mi cuenta y terminó siendo la parte que más me mueve. Entender una red desde el protocolo me cambió la forma de romperla — sé qué debería estar pasando, así que identifico rápido lo que no cuadra.
 
-Le entro a lo que se deje, pero donde tengo horas de verdad es en web y en dominios de Active Directory. Cuando el objetivo deja de ser una máquina y pasa a ser una organización entera, el juego cambia — ya no buscas una puerta, lees un mapa de confianzas y decides cuál te lleva más lejos.
+Toco varias áreas de la ofensiva, pero donde tengo horas reales es en aplicaciones web y en dominios de Active Directory. Cuando el objetivo deja de ser una máquina y pasa a ser una organización entera, el trabajo cambia: ya no buscas una puerta, lees un mapa de confianzas y decides cuál te lleva más lejos.
 
-Del otro lado también construyo. Lo que me clava es automatizar: si algo ya lo hice dos veces a mano, la tercera es un script. Y el front, porque me importa cómo se siente usar lo que entrego; el backend lo peleo cuando toca, sin romance. Últimamente ando metiendo datos e IA en la ecuación, para que la máquina correlacione lo que a mí se me pasaría a las tres de la mañana.
+Del otro lado también construyo. Lo que más disfruto es automatizar: si algo ya lo hice dos veces a mano, la tercera es un script. Y el frontend, porque me importa cómo se siente usar lo que entrego; el backend lo resuelvo cuando hace falta, aunque no sea mi terreno favorito. Últimamente estoy sumando datos e IA a la ecuación, para que la máquina correlacione lo que a mí se me pasaría a las tres de la mañana.
 
 Nada de esto me lo dieron resuelto. Esa es justo la parte que me gusta.
 
