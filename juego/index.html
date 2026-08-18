@@ -227,9 +227,15 @@
     portalRead: false,
     bakRead: false,
     userShell: false,
-    sudoChecked: false,
+    suidFound: false,
+    binFile: false,
+    binChecksec: false,
+    binStrings: false,
+    crashed: false,
+    offsetKnown: false,
+    addrKnown: false,
     rooted: false,
-    hintStage: 0
+    cwd: '~'
   };
 
   var history = [];
@@ -325,13 +331,105 @@
   var USER_FLAG = 'FLAG{umbra_foothold_2f9c41}';
   var ROOT_FLAG = 'FLAG{umbra_r00t_owned_8ab7e0}';
 
-  var SUDO_L = [
-    'Matching Defaults entries for svc_web on umbra:',
-    '    env_reset, mail_badpass',
-    '',
-    'User svc_web may run the following commands on umbra:',
-    '    (root) NOPASSWD: /usr/bin/find'
+  // ---------- binario SUID vulnerable ----------
+  var BUFSIZE = 64;
+  var OFFSET  = 76;
+  var WIN_ADDR = 0x0804925d;
+  var WIN_BYTES = [0x5d, 0x92, 0x04, 0x08];
+  var BIN = '/opt/umbra/report_check';
+
+  var SUID = [
+    '/usr/bin/passwd',
+    '/usr/bin/chsh',
+    '/usr/bin/chfn',
+    '/usr/bin/newgrp',
+    '/usr/bin/gpasswd',
+    '/usr/bin/mount',
+    '/usr/bin/umount',
+    '/usr/bin/sudo',
+    '/usr/bin/pkexec',
+    '/opt/umbra/report_check'
   ];
+
+  var FILE_OUT = 'report_check: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=1d8f2c, for GNU/Linux 3.2.0, not stripped';
+
+  var CHECKSEC = [
+    'Arch:     i386-32-little',
+    'RELRO:    Partial RELRO',
+    'Stack:    No canary found',
+    'NX:       NX enabled',
+    'PIE:      No PIE (0x8048000)'
+  ];
+
+  var STRINGS_OUT = [
+    '/lib/ld-linux.so.2',
+    'libc.so.6',
+    'gets',
+    'printf',
+    'puts',
+    'system',
+    '/bin/sh',
+    'report_check v1.0 - validador de reportes',
+    'introduce el contenido del reporte: ',
+    '[+] reporte recibido (%d bytes)'
+  ];
+
+  var NM_OUT = [
+    '0804a028 B __bss_start',
+    '08049200 T vuln',
+    '08049245 T main',
+    '0804925d T spawn_root',
+    '         U gets@@GLIBC_2.0',
+    '         U printf@@GLIBC_2.0',
+    '         U system@@GLIBC_2.0'
+  ];
+
+  var OBJDUMP_VULN = [
+    '08049200 <vuln>:',
+    ' 8049200:  push   ebp',
+    ' 8049201:  mov    ebp,esp',
+    ' 8049203:  sub    esp,0x48            ; reserva 64 bytes de buffer',
+    ' 8049206:  sub    esp,0xc',
+    ' 8049209:  lea    eax,[ebp-0x40]',
+    ' 804920c:  push   eax',
+    ' 804920d:  call   8049080 <gets@plt>  ; gets() sin control de longitud',
+    ' 8049212:  add    esp,0x10',
+    ' 8049215:  leave',
+    ' 8049216:  ret'
+  ];
+
+  var OBJDUMP_SPAWN = [
+    '0804925d <spawn_root>:',
+    ' 804925d:  push   ebp',
+    ' 804925e:  mov    ebp,esp',
+    ' 8049260:  sub    esp,0x8',
+    ' 8049263:  push   0x804a00c           ; "/bin/sh"',
+    ' 8049268:  call   80490a0 <system@plt>',
+    ' 804926d:  add    esp,0x10',
+    ' 8049270:  nop',
+    ' 8049271:  leave',
+    ' 8049272:  ret'
+  ];
+
+  var lastPattern = '';
+  var lastFault = null; // {t,pid,addr,ip,sp}
+
+  function msfPattern(len){
+    var up='ABCDEFGHIJKLMNOPQRSTUVWXYZ', lo='abcdefghijklmnopqrstuvwxyz', num='0123456789', s='';
+    for(var i=0;i<up.length;i++) for(var j=0;j<lo.length;j++) for(var k=0;k<num.length;k++){
+      s += up[i]+lo[j]+num[k];
+      if(s.length>=len) return s.slice(0,len);
+    }
+    return s.slice(0,len);
+  }
+  function hx2(n){ n = n & 0xff; return (n<16?'0':'') + n.toString(16); }
+  function eipFromBytes(b0,b1,b2,b3){ return '0x'+hx2(b3)+hx2(b2)+hx2(b1)+hx2(b0); }
+  function repeatChar(c,n){ return n>0 ? new Array(n+1).join(c) : ''; }
+  function repeatShown(n){
+    if(n<=0) return '';
+    if(n<=512) return repeatChar('A', n);
+    return repeatChar('A', 512) + '...(+' + (n-512) + ')';
+  }
 
   // ---------- comandos ----------
   function cImage(){
@@ -343,26 +441,34 @@
 '  \\___/|_|  |_|____/|_| \\_\\/_/   \\_\\');
     print('dim', 'objetivo: umbra (' + TARGET + ')   dificultad: media');
     blank();
-    print('out', 'Tienes acceso a una red interna. Hay una maquina viva. Consiguela.');
-    print('out', 'No hay pistas gratis: enumera, encuentra el camino, entra y escala a root.');
-    print('dim', "escribe 'help' para ver las herramientas disponibles. 'hint' si te atoras.");
+    print('out', 'Red interna, una maquina viva. Enumera, consigue foothold y escala a root.');
+    print('out', 'El root sale por un binario SUID de 32 bits vulnerable a buffer overflow.');
+    print('dim', "help para el catalogo de herramientas. hint si te atoras.");
     blank();
   }
 
   function cHelp(){
-    print('head', 'herramientas disponibles');
-    print('out', '  nmap <ip>            escaneo de puertos y servicios');
-    print('out', '  gobuster <url>       fuzzing de directorios web (tambien: dirb, ffuf)');
-    print('out', '  curl <url>           peticion http / leer un recurso');
-    print('out', '  ssh <user>@<ip>      conexion remota (te pedira idea de la password)');
-    print('out', '  ls                   listar (cuando tengas shell)');
-    print('out', '  cat <archivo>        leer un archivo');
-    print('out', '  sudo -l              ver que puedes correr como root');
-    print('out', '  sudo <cmd>           ejecutar como root');
-    print('out', '  whoami               quien eres ahora mismo');
-    print('out', '  clear                limpiar pantalla     hint   pista     reset   reiniciar');
+    print('head', 'recon / web');
+    print('out', '  nmap <ip>                 escaneo de puertos y servicios');
+    print('out', '  gobuster <url>            fuzzing de directorios (dirb, ffuf)');
+    print('out', '  curl <url>                peticion http / leer recurso');
+    print('out', '  ssh <user>@<ip>           conexion remota');
     blank();
-    print('dim', 'nadie te va a decir el orden. eso es lo divertido.');
+    print('head', 'sistema (con shell)');
+    print('out', '  ls [ruta]   cat <archivo>   cd <ruta>   pwd   whoami   uname -a');
+    print('out', '  find / -perm -4000 -type f 2>/dev/null     binarios SUID');
+    blank();
+    print('head', 'binario / buffer overflow');
+    print('out', '  file <bin>                arquitectura, PIE, stripped');
+    print('out', '  checksec --file=<bin>     canary, NX, PIE');
+    print('out', '  strings <bin>             cadenas del binario');
+    print('out', '  nm <bin>   objdump -d <bin>   simbolos y desensamblado');
+    print('out', '  msf-pattern_create -l N   patron ciclico');
+    print('out', '  msf-pattern_offset -l N -q <eip>   offset del retorno');
+    print('out', '  dmesg | tail              EIP tras un segfault');
+    print('out', "  python3 -c '...' | <bin>  enviar el payload");
+    blank();
+    print('dim', 'clear  limpiar     hint  pista     reset  reiniciar');
     blank();
   }
 
@@ -487,10 +593,19 @@
     scrollDown();
   }
 
-  function cLs(){
+  function cLs(rest){
     if (!S.userShell) { print('bad', 'ls: primero necesitas una shell en la maquina.'); return; }
-    if (S.rooted) { print('out', 'root.txt   .bash_history   .ssh'); return; }
-    print('out', HOME_LS);
+    var t = (rest||'').replace(/-\w+/g,'').trim();
+    if (t === '/opt/umbra' || t === '/opt/umbra/' || (t === '.' && S.cwd === '/opt/umbra') || (t === '' && S.cwd === '/opt/umbra')) {
+      print('out', 'total 24');
+      printHTML('magenta', '-rwsr-xr-x 1 root root 15912 report_check');
+      print('out', '-rw-r--r-- 1 root root   128 README');
+      print('dim', 'report_check tiene el bit SUID (la s) y pertenece a root: corre con privilegios de root.');
+      return;
+    }
+    if (S.rooted && (t === '' || t === '~')) { print('out', 'root.txt   .bash_history   .ssh'); return; }
+    if (t === '' || t === '~') { print('out', HOME_LS); return; }
+    print('bad', "ls: no se puede acceder a '" + t + "': No such file or directory");
   }
 
   function cCat(arg){
@@ -504,7 +619,10 @@
     }
     if (f === 'README.txt') { print('out', 'Servidor de la cuenta de servicio web. No tocar cron.'); return; }
     if (f === '.bash_history') {
-      print('out', 'id'); print('out', 'sudo -l'); print('dim', '(alguien reviso sus permisos sudo antes...)');
+      print('out', 'id');
+      print('out', 'ls -la /opt/umbra');
+      print('out', 'file /opt/umbra/report_check');
+      print('dim', 'el usuario estuvo revisando ese binario SUID.');
       return;
     }
     if (f === '/root/root.txt' || f === 'root.txt' || f === '~/root.txt') {
@@ -519,26 +637,241 @@
   function cSudo(arg){
     if (!S.userShell) { print('bad', 'sudo: primero consigue una shell.'); return; }
     var a = arg.trim();
-    if (a === '-l') {
-      SUDO_L.forEach(function(l){ print(l.indexOf('find')>-1 ? 'magenta':'out', l); });
-      S.sudoChecked = true;
-      print('dim', "puedes correr /usr/bin/find como root sin password. eso es explotable (busca 'GTFOBins find').");
+    if (a === '-l' || a === '--list') {
+      print('out', '[sudo] password for svc_web:');
+      print('bad', 'svc_web no aparece en el fichero sudoers. Se reportara este incidente.');
+      print('dim', 'sin via por sudo. enumera binarios SUID: find / -perm -4000 -type f 2>/dev/null');
       return;
     }
-    // explotacion via find
-    if (/^find\b/.test(a)) {
-      if (a.indexOf('-exec') > -1 && /(\/bin\/sh|\/bin\/bash|sh\b|bash\b)/.test(a)) {
-        S.rooted = true;
-        renderPrompt();
-        print('ok', '# id');
-        print('out', 'uid=0(root) gid=0(root) groups=0(root)');
-        print('ok', 'eres root. lee la flag: cat /root/root.txt');
-        return;
-      }
-      print('warn', 'find corrio como root, pero no lanzaste una shell. pista: find . -exec /bin/sh \\; -quit');
+    print('bad', 'svc_web no aparece en el fichero sudoers.');
+  }
+
+  function requireShell(name){
+    if (!S.userShell) { print('bad', name + ': necesitas una shell en la maquina primero.'); return false; }
+    return true;
+  }
+
+  function cFind(rest){
+    if (!requireShell('find')) return;
+    if (/-perm\s*-?0?4000|-perm\s*-u[=+]s|-perm\s*\/4000/.test(rest)) {
+      SUID.forEach(function(p){ print(p === BIN ? 'magenta' : 'out', p); });
+      S.suidFound = true;
+      print('dim', BIN + ' no es del sistema: binario propio con SUID de root. ahi esta el camino.');
       return;
     }
-    print('bad', 'sudo: solo tienes permitido /usr/bin/find como root (sudo -l).');
+    if (rest.trim() === '') { print('bad', 'find: falta un punto de partida. ej: find / -perm -4000 -type f 2>/dev/null'); return; }
+    print('dim', 'find: ' + rest + '  ->  sin resultados relevantes.');
+  }
+
+  function cFile(rest){
+    if (!requireShell('file')) return;
+    if (rest.indexOf('report_check') === -1) { print('bad', 'file: ' + (rest.trim() || 'operando') + ': No such file or directory'); return; }
+    print('out', FILE_OUT);
+    print('dim', '32-bit, sin PIE, no stripped: las direcciones son fijas y hay simbolos que leer.');
+    S.binFile = true;
+  }
+
+  function cChecksec(rest){
+    if (!requireShell('checksec')) return;
+    if (rest.indexOf('report_check') === -1) { print('bad', 'checksec: indica el binario. ej: checksec --file=' + BIN); return; }
+    CHECKSEC.forEach(function(l){ print(/No canary|No PIE/.test(l) ? 'magenta' : 'out', l); });
+    print('dim', 'sin canario y sin PIE: puedes sobrescribir la direccion de retorno con una fija.');
+    S.binChecksec = true;
+  }
+
+  function cStrings(rest){
+    if (!requireShell('strings')) return;
+    if (rest.indexOf('report_check') === -1) { print('bad', 'strings: ' + (rest.trim() || 'archivo') + ': No such file'); return; }
+    STRINGS_OUT.forEach(function(l){ print((l === 'gets' || l === 'system' || l === '/bin/sh') ? 'magenta' : 'out', l); });
+    print('dim', 'gets() es el overflow. system() y /bin/sh ya viven en el binario: hay a donde saltar.');
+    S.binStrings = true;
+  }
+
+  function cNm(rest){
+    if (!requireShell('nm')) return;
+    if (rest.indexOf('report_check') === -1) { print('bad', 'nm: ' + (rest.trim() || 'archivo') + ': No such file'); return; }
+    NM_OUT.forEach(function(l){ print(/spawn_root/.test(l) ? 'magenta' : 'out', l); });
+    print('dim', 'spawn_root() en 0x0804925d lanza system("/bin/sh"). esa es tu direccion de retorno.');
+    S.addrKnown = true;
+  }
+
+  function cObjdump(rest){
+    if (!requireShell('objdump')) return;
+    if (rest.indexOf('report_check') === -1) { print('bad', 'objdump: ' + (rest.trim() || 'archivo') + ': File format not recognized'); return; }
+    OBJDUMP_VULN.forEach(function(l){ print(/gets/.test(l) ? 'magenta' : 'out', l); });
+    blank();
+    OBJDUMP_SPAWN.forEach(function(l){ print(/system|bin\/sh/.test(l) ? 'magenta' : 'out', l); });
+    print('dim', 'vuln() mete gets() en un buffer de 64. spawn_root() en 0x0804925d.');
+    S.addrKnown = true;
+  }
+
+  function cDmesg(){
+    if (!requireShell('dmesg')) return;
+    if (!lastFault) { print('dim', '(sin segfaults recientes en el log del kernel.)'); return; }
+    print('out', '[' + lastFault.t + '] report_check[' + lastFault.pid + ']: segfault at ' + lastFault.addr + ' ip ' + lastFault.ip + ' sp ' + lastFault.sp + ' error 4 in report_check[8048000+1000]');
+    print('magenta', 'EIP = ' + lastFault.ip + '   <- controlas el flujo de ejecucion');
+  }
+
+  function cCd(rest){
+    if (!requireShell('cd')) return;
+    var t = rest.trim();
+    if (t === '' || t === '~') { S.cwd = '~'; return; }
+    if (t === '/opt/umbra' || t === '/opt/umbra/') { S.cwd = '/opt/umbra'; return; }
+    if (t === '/opt') { S.cwd = '/opt'; return; }
+    if (t === '..') { S.cwd = (S.cwd === '/opt/umbra') ? '/opt' : '~'; return; }
+    print('bad', 'cd: ' + t + ': No such file or directory');
+  }
+
+  function cPwd(){
+    if (!S.userShell) { print('out', '/home/hacker'); return; }
+    print('out', S.cwd === '~' ? '/home/svc_web' : S.cwd);
+  }
+
+  function cUname(){ print('out', 'Linux umbra 5.4.0-88-generic #99-Ubuntu SMP i686 i686 i386 GNU/Linux'); }
+
+  function cPatternCreate(rest){
+    var m = rest.match(/-l\s*(\d+)/) || rest.match(/(\d+)/);
+    if (!m) { print('bad', 'uso: msf-pattern_create -l <longitud>'); return; }
+    var len = Math.min(parseInt(m[1], 10), 20000);
+    lastPattern = msfPattern(len);
+    print('out', lastPattern);
+    print('dim', 'patron ciclico de ' + len + ' bytes. mandaselo al binario y mira que cae en EIP.');
+  }
+
+  function cPatternOffset(rest){
+    var lm = rest.match(/-l\s*(\d+)/);
+    var qm = rest.match(/-q\s*(?:0x)?([0-9a-fA-F]{1,8})/) || rest.match(/(?:0x)?([0-9a-fA-F]{8})\b/);
+    if (!qm) { print('bad', 'uso: msf-pattern_offset -l <len> -q <valor_eip>'); return; }
+    var len = lm ? parseInt(lm[1], 10) : (lastPattern.length || 400);
+    var pat = (lastPattern && lastPattern.length >= len) ? lastPattern : msfPattern(len);
+    var v = parseInt(qm[1], 16);
+    var needle = String.fromCharCode(v & 0xff) + String.fromCharCode((v >> 8) & 0xff) +
+                 String.fromCharCode((v >> 16) & 0xff) + String.fromCharCode((v >> 24) & 0xff);
+    var off = pat.indexOf(needle);
+    if (off < 0) {
+      print('bad', '[-] valor no encontrado en el patron. genera el patron con msf-pattern_create y mandalo tal cual.');
+      return;
+    }
+    print('ok', '[+] Exact match at offset ' + off);
+    S.offsetKnown = true;
+  }
+
+  // parsea un generador de payload (python/perl/printf/msf-pattern) a bytes
+  function genPayload(gen){
+    var out = { padLen: 0, addr: [], isPattern: false, patLen: 0, raw: false };
+    if (/pattern_create/.test(gen)) {
+      var pm = gen.match(/-l\s*(\d+)/) || gen.match(/(\d+)/);
+      out.isPattern = true;
+      out.patLen = pm ? parseInt(pm[1], 10) : 0;
+      out.padLen = out.patLen;
+      return out;
+    }
+    out.raw = /buffer\.write|perl\b|printf\b|python2\b/.test(gen) || (/\bpython\b/.test(gen) && !/\bpython3\b/.test(gen));
+    var mul = gen.match(/["'].?["']\s*[*x]\s*(\d+)/);
+    if (mul) out.padLen = parseInt(mul[1], 10);
+    var re = /\\x([0-9a-fA-F]{2})/g, mm;
+    while ((mm = re.exec(gen)) !== null) out.addr.push(parseInt(mm[1], 16));
+    return out;
+  }
+
+  function cPython(line){
+    var g = genPayload(line);
+    if (g.padLen === 0 && g.addr.length === 0) { print('dim', '(python: -c sin una cadena que imprimir.)'); return; }
+    print('out', repeatShown(g.padLen) + g.addr.map(function(b){ return '\\x' + hx2(b); }).join(''));
+    print('dim', 'longitud: ' + (g.padLen + g.addr.length) + ' bytes. canalizalo al binario con  | ' + BIN);
+  }
+
+  function registerFault(ip){
+    lastFault = {
+      t: (1000 + Math.floor(Math.random() * 8000)) + '.' + (100000 + Math.floor(Math.random() * 800000)),
+      pid: 2000 + Math.floor(Math.random() * 900),
+      addr: ip.replace('0x', ''),
+      ip: ip,
+      sp: '0xffffd' + (100 + Math.floor(Math.random() * 800))
+    };
+  }
+
+  // intercepta la ejecucion del binario (directa o al final de un pipe)
+  function handleExec(line){
+    var segs = line.split('|');
+    var lastCmd = segs[segs.length - 1].replace(/<.*/, '').trim();
+    if (!/^(\.\/report_check|\/opt\/umbra\/report_check|report_check)(\s|$)/.test(lastCmd)) return false;
+    if (!requireShell('report_check')) return true;
+    if (/^\.\/report_check/.test(lastCmd) && S.cwd !== '/opt/umbra') {
+      print('bad', 'bash: ./report_check: No such file or directory');
+      print('dim', 'el binario esta en /opt/umbra. entra ahi (cd /opt/umbra) o usa la ruta completa.');
+      return true;
+    }
+    var payload = (segs.length > 1) ? genPayload(segs.slice(0, -1).join('|')) : null;
+    simulateBinary(payload);
+    return true;
+  }
+
+  function simulateBinary(p){
+    print('out', 'report_check v1.0 - validador de reportes');
+    if (!p || (!p.padLen && !p.addr.length && !p.isPattern)) {
+      print('out', 'introduce el contenido del reporte: ');
+      print('out', '[+] reporte recibido (0 bytes)');
+      print('dim', 'sin entrada. canaliza un payload:  python3 -c ...  | ' + BIN);
+      return;
+    }
+    var total = p.isPattern ? p.patLen : (p.padLen + p.addr.length);
+    print('out', 'introduce el contenido del reporte: ');
+    print('out', '[+] reporte recibido (' + total + ' bytes)');
+
+    if (p.isPattern) {
+      if (p.patLen < OFFSET + 4) { print('warn', 'el proceso termino sin crashear: el patron es mas corto que el buffer.'); return; }
+      var pat = (lastPattern && lastPattern.length >= p.patLen) ? lastPattern : msfPattern(p.patLen);
+      var eip = eipFromBytes(pat.charCodeAt(OFFSET), pat.charCodeAt(OFFSET + 1), pat.charCodeAt(OFFSET + 2), pat.charCodeAt(OFFSET + 3));
+      registerFault(eip);
+      print('bad', 'Segmentation fault (core dumped)');
+      print('dim', 'EIP cayo con bytes del patron. sacale el offset:  dmesg | tail  ->  msf-pattern_offset -l ' + p.patLen + ' -q ' + eip);
+      S.crashed = true;
+      return;
+    }
+
+    if (p.addr.length === 0) {
+      if (p.padLen < BUFSIZE) { print('dim', 'entra completo en el buffer (' + BUFSIZE + ' bytes). sin crash.'); return; }
+      if (p.padLen < OFFSET) { print('warn', 'corrompe la pila pero aun no alcanzas la direccion de retorno.'); return; }
+      registerFault('0x41414141');
+      print('bad', 'Segmentation fault (core dumped)');
+      print('magenta', 'EIP = 0x41414141');
+      print('dim', 'controlas EIP con puras A. ahora saca el offset exacto y una direccion a donde saltar.');
+      S.crashed = true;
+      return;
+    }
+
+    if (p.addr.length !== 4) {
+      print('warn', 'en 32-bit la direccion de retorno son 4 bytes. mandaste ' + p.addr.length + '. formato little-endian: \\xNN\\xNN\\xNN\\xNN');
+      return;
+    }
+    if (p.padLen !== OFFSET) {
+      registerFault('0x41414141');
+      print('bad', 'Segmentation fault (core dumped)');
+      print('warn', 'offset equivocado: pusiste ' + p.padLen + ' bytes de relleno; el retorno esta exactamente en ' + OFFSET + '.');
+      return;
+    }
+    var high = p.addr.some(function(b){ return b > 0x7f; });
+    if (!p.raw && high) {
+      registerFault('0x08049200');
+      print('bad', 'Segmentation fault (core dumped)');
+      print('warn', "print() de python3 codifica los bytes altos en UTF-8 y agrega \\n: el payload se corrompe.");
+      print('dim', "usa: python3 -c 'import sys;sys.stdout.buffer.write(b\"A\"*76+b\"\\x5d\\x92\\x04\\x08\")' | " + BIN);
+      return;
+    }
+    var eip2 = eipFromBytes(p.addr[0], p.addr[1], p.addr[2], p.addr[3]);
+    if (p.addr[0] === WIN_BYTES[0] && p.addr[1] === WIN_BYTES[1] && p.addr[2] === WIN_BYTES[2] && p.addr[3] === WIN_BYTES[3]) {
+      S.rooted = true;
+      renderPrompt();
+      print('ok', '$ id');
+      print('out', 'uid=0(root) gid=0(root) groups=0(root)');
+      print('ok', 'retorno redirigido a spawn_root(). shell de root.');
+      print('dim', 'lee la flag:  cat /root/root.txt');
+      return;
+    }
+    registerFault(eip2);
+    print('bad', 'Segmentation fault (core dumped)');
+    print('warn', 'EIP = ' + eip2 + '. controlas el retorno, pero esa no es spawn_root (0x0804925d).');
   }
 
   function cWhoami(){
@@ -547,29 +880,36 @@
   }
 
   function cHint(){
-    var stages;
-    if (!S.scanned) stages = "empieza por lo basico: no sabes que puertos tiene abiertos. escanealo.";
-    else if (!S.webRead && !S.dirsFound) stages = "hay un servicio web en el 80. leelo (curl) y fuzzea directorios (gobuster).";
-    else if (!S.portalRead) stages = "el HTML de la pagina tiene un comentario. hay una ruta que no deberia existir.";
-    else if (!S.bakRead) stages = "en /portal-dev alguien dejo un backup del config. los .bak no ejecutan php: se leen tal cual.";
-    else if (!S.userShell) stages = "el config filtra la password de svc_web, y dice que la cuenta de sistema usa la misma. entra por ssh.";
-    else if (!S.sudoChecked) stages = "ya estas dentro. lo primero que se revisa: 'sudo -l'.";
-    else if (!S.rooted) stages = "puedes correr find como root. GTFOBins: sudo find . -exec /bin/sh \\; -quit";
-    else stages = "eres root. cat /root/root.txt y listo.";
-    print('warn', 'pista> ' + stages);
+    var h;
+    if (!S.scanned) h = "no sabes que puertos tiene abiertos. nmap " + TARGET;
+    else if (!S.webRead && !S.dirsFound) h = "hay web en el 80. leela (curl) y fuzzea directorios (gobuster).";
+    else if (!S.portalRead) h = "el HTML tiene un comentario. hay una ruta que no deberia estar publicada.";
+    else if (!S.bakRead) h = "en /portal-dev quedo un config.php.bak. los .bak no ejecutan php: se leen tal cual.";
+    else if (!S.userShell) h = "el backup filtra la password de svc_web y dice que el usuario del sistema usa la misma. ssh.";
+    else if (!S.suidFound) h = "estas dentro y sin sudo. busca binarios SUID: find / -perm -4000 -type f 2>/dev/null";
+    else if (!(S.binFile || S.binChecksec || S.binStrings)) h = BIN + " es SUID root. analizalo: file, checksec, strings.";
+    else if (!S.crashed) h = "usa gets() sobre un buffer de 64. desbordalo:  python3 -c 'print(\"A\"*100)' | " + BIN;
+    else if (!S.offsetKnown) h = "saca el offset exacto: msf-pattern_create -> mandalo al binario -> dmesg -> msf-pattern_offset (son " + OFFSET + ").";
+    else if (!S.addrKnown) h = "necesitas a donde saltar. nm/objdump: spawn_root() lanza la shell.";
+    else if (!S.rooted) h = "payload final:  python3 -c 'import sys;sys.stdout.buffer.write(b\"A\"*" + OFFSET + "+b\"\\x5d\\x92\\x04\\x08\")' | " + BIN;
+    else h = "eres root. cat /root/root.txt";
+    print('warn', 'pista> ' + h);
   }
 
   function win(){
     blank();
     print('head', '================ MAQUINA COMPROMETIDA ================');
-    print('ok', 'recon -> foothold -> shell de usuario -> root. cadena completa.');
-    printHTML('out', 'si esto se te hizo facil, <a href="https://github.com/DiegoPerrusquia" target="_blank" rel="noopener">hablamos</a>.');
+    print('ok', 'recon -> web -> foothold ssh -> buffer overflow SUID -> root.');
+    printHTML('out', 'codigo y notas: <a href="https://github.com/DiegoPerrusquia" target="_blank" rel="noopener">github.com/DiegoPerrusquia</a>');
     blank();
   }
 
   function cReset(){
-    S = { scanned:false, webRead:false, dirsFound:false, portalRead:false, bakRead:false, userShell:false, sudoChecked:false, rooted:false, hintStage:0 };
+    S = { scanned:false, webRead:false, dirsFound:false, portalRead:false, bakRead:false, userShell:false,
+          suidFound:false, binFile:false, binChecksec:false, binStrings:false, crashed:false, offsetKnown:false, addrKnown:false, rooted:false, cwd:'~' };
     awaiting = null;
+    lastPattern = '';
+    lastFault = null;
     input.type = 'text';
     screen.innerHTML = '';
     renderPrompt();
@@ -580,6 +920,9 @@
     var line = raw.trim();
     if (!line) return;
     echoCmd(raw);
+
+    if (handleExec(line)) { blank(); scrollDown(); return; }
+
     var parts = line.split(/\s+/);
     var cmd = parts[0].toLowerCase();
     var rest = line.slice(parts[0].length).trim();
@@ -591,8 +934,21 @@
       case 'curl': case 'wget': cCurl(rest); break;
       case 'gobuster': case 'dirb': case 'ffuf': case 'feroxbuster': cGobuster(rest); break;
       case 'ssh': cSsh(rest); break;
-      case 'ls': case 'dir': cLs(); break;
+      case 'ls': case 'dir': cLs(rest); break;
       case 'cat': case 'less': case 'more': cCat(rest); break;
+      case 'cd': cCd(rest); break;
+      case 'pwd': cPwd(); break;
+      case 'uname': cUname(); break;
+      case 'find': cFind(rest); break;
+      case 'file': cFile(rest); break;
+      case 'checksec': cChecksec(rest); break;
+      case 'strings': cStrings(rest); break;
+      case 'nm': cNm(rest); break;
+      case 'objdump': cObjdump(rest); break;
+      case 'dmesg': cDmesg(); break;
+      case 'python3': case 'python': case 'python2': case 'perl': cPython(line); break;
+      case 'msf-pattern_create': case 'pattern_create': cPatternCreate(rest); break;
+      case 'msf-pattern_offset': case 'pattern_offset': cPatternOffset(rest); break;
       case 'sudo': cSudo(rest); break;
       case 'whoami': case 'id': cWhoami(); break;
       case 'hint': cHint(); break;
@@ -602,7 +958,7 @@
         else print('dim','no hay sesion que cerrar.');
         break;
       default:
-        print('bad', cmd + ': command not found  (escribe help)');
+        print('bad', cmd + ': command not found  (help)');
     }
     blank();
     scrollDown();

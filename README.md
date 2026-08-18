@@ -33,7 +33,7 @@ Nada de esto me lo dieron resuelto. Esa es justo la parte que me gusta.
   <img src="assets/tb-cierre.svg" width="100%" alt="Antes de irte, entra a una máquina"/>
 </div>
 
-Monté **UMBRA**: un reto de terminal estilo HackTheBox que corre en el navegador. No hay opciones que elegir ni puertos regalados — escribes comandos de verdad (`nmap`, `gobuster`, `curl`, `ssh`, `sudo -l`), enumeras la máquina, consigues foothold y escalas a root. Dificultad media. Nada de esto toca sistemas reales.
+Monté **UMBRA**: un reto de terminal estilo HackTheBox que corre en el navegador. No hay opciones que elegir ni puertos regalados — escribes comandos de verdad (`nmap`, `gobuster`, `curl`, `ssh`, `find`, `checksec`, `objdump`), enumeras la máquina, consigues foothold y escalas a root explotando un binario SUID vulnerable a buffer overflow: fuzzeas, sacas el offset con un patrón cíclico, encuentras la dirección de retorno y saltas. Dificultad media. Nada de esto toca sistemas reales.
 
 <div align="center">
   <a href="https://diegoperrusquia.github.io/juego/">
