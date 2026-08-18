@@ -6,6 +6,10 @@
 
 </div>
 
+<table width="100%">
+<tr>
+<td width="38%" valign="top">
+
 Ingeniero de TI y operaciones de seguridad. Paso el día entre levantar sistemas y buscarles la vuelta para tumbarlos, y las dos partes se retroalimentan: rompo mejor porque sé cómo se arma algo, y armo con más cuidado porque ya vi por dónde se cae.
 
 Lo que de verdad me atrapa es automatizar. Un problema que resuelvo dos veces a mano ya es candidato a convertirse en script; por eso casi todo lo que escribo termina siendo una herramienta que me quita el trabajo repetido de encima.
@@ -14,11 +18,14 @@ En la parte ofensiva me muevo sobre la web y sobre Linux — es donde tengo más
 
 Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
 
-<br/>
+</td>
+<td width="62%" valign="top">
 
-<div align="center">
-  <img src="assets/stack.svg" width="100%" alt="Lenguajes según mis repos de GitHub, por bytes: Python, Batchfile, Dart, HTML, C++, CMake, Shell, Swift"/>
-</div>
+<img src="assets/stack.svg" width="100%" alt="Lenguajes según mis repos de GitHub, por bytes: Python, Batchfile, Dart, HTML, C++, CMake, Shell, Swift"/>
+
+</td>
+</tr>
+</table>
 
 <br/>
 
