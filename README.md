@@ -2,6 +2,9 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0710,40:a855f7,100:f43f5e&height=170&section=header&text=Diego%20Perrusquia&fontSize=44&fontColor=ffffff&animation=fadeIn&fontAlignY=38" width="100%" alt="Diego Perrusquia"/>
 
+<img src="assets/tb-ruta.svg" width="100%" alt="bloodhound --path=DA"/>
+<img src="assets/ruta.svg" width="100%" alt="Ruta de ataque animada: foothold, workstation, kerberoast a cuenta de servicio, pass-the-hash a domain admin, dcsync a DC01"/>
+
 <img src="assets/tb-whoami.svg" width="100%" alt="whoami"/>
 
 </div>
