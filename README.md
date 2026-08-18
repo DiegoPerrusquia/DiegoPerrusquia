@@ -2,16 +2,9 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0710,40:a855f7,100:f43f5e&height=170&section=header&text=Diego%20Perrusquia&fontSize=44&fontColor=ffffff&animation=fadeIn&fontAlignY=38" width="100%" alt="Diego Perrusquia"/>
 
-<img src="assets/tb-ruta.svg" width="100%" alt="bloodhound --path=DA"/>
-<img src="assets/ruta.svg" width="100%" alt="Ruta de ataque animada: foothold, workstation, kerberoast a cuenta de servicio, pass-the-hash a domain admin, dcsync a DC01"/>
-
 <img src="assets/tb-whoami.svg" width="100%" alt="whoami"/>
 
 </div>
-
-<table width="100%">
-<tr>
-<td width="38%" valign="top">
 
 Ingeniero de TI y operaciones de seguridad. Paso el día entre levantar sistemas y buscarles la vuelta para tumbarlos, y las dos partes se retroalimentan: rompo mejor porque sé cómo se arma algo, y armo con más cuidado porque ya vi por dónde se cae.
 
@@ -21,14 +14,11 @@ En la parte ofensiva me muevo sobre la web y sobre Linux — es donde tengo más
 
 Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
 
-</td>
-<td width="62%" valign="top">
+<br/>
 
-<img src="assets/stack.svg" width="100%" alt="Lenguajes según mis repos de GitHub, por bytes: Python, Batchfile, Dart, HTML, C++, CMake, Shell, Swift"/>
-
-</td>
-</tr>
-</table>
+<div align="center">
+  <img src="assets/stack.svg" width="100%" alt="Lenguajes según mis repos de GitHub, por bytes: Python, Batchfile, Dart, HTML, C++, CMake, Shell, Swift"/>
+</div>
 
 <br/>
 
