@@ -449,10 +449,10 @@
 
   function cHelp(){
     print('head', 'recon / web');
-    print('out', '  nmap <ip>                 escaneo de puertos y servicios');
-    print('out', '  gobuster <url>            fuzzing de directorios (dirb, ffuf)');
-    print('out', '  curl <url>                peticion http / leer recurso');
-    print('out', '  ssh <user>@<ip>           conexion remota');
+    print('out', '  nmap -sC -sV -p- ' + TARGET + '        escaneo con scripts y version');
+    print('out', '  gobuster dir -u http://' + TARGET + ' -w <wordlist> -t 50');
+    print('out', '  curl -s http://' + TARGET + '/<ruta>          leer recurso');
+    print('out', '  ssh <user>@' + TARGET + '                 conexion remota');
     blank();
     print('head', 'sistema (con shell)');
     print('out', '  ls [ruta]   cat <archivo>   cd <ruta>   pwd   whoami   uname -a');
@@ -477,26 +477,39 @@
       print('bad', 'nmap: sin respuesta de ese host. el objetivo es ' + TARGET);
       return;
     }
-    print('dim', 'Starting Nmap 7.94 scan against ' + TARGET + ' ...');
-    print('out', 'Nmap scan report for umbra (' + TARGET + ')');
+    print('dim', 'Starting Nmap 7.94 ( https://nmap.org )');
+    print('out', 'Nmap scan report for ' + TARGET);
     print('out', 'Host is up (0.021s latency).');
+    print('out', 'Not shown: 998 closed tcp ports (conn-refused)');
     blank();
-    print('head', 'PORT     STATE SERVICE   VERSION');
-    print('out', '22/tcp   open  ssh       OpenSSH 8.2p1 Ubuntu 4ubuntu0.9');
-    print('out', '80/tcp   open  http      Apache httpd 2.4.41 ((Ubuntu))');
+    print('head', 'PORT   STATE SERVICE VERSION');
+    print('out', '22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 (Ubuntu Linux; protocol 2.0)');
+    print('out', '| ssh-hostkey:');
+    print('out', '|   3072 9a:1c:7d:4e:2b:f0:11:63:aa:5c:d9:87:34:6e:1a:22 (RSA)');
+    print('out', '80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))');
+    print('out', '|_http-server-header: Apache/2.4.41 (Ubuntu)');
+    print('out', '|_http-title: Umbra Dynamics');
     blank();
-    print('dim', 'Service detection performed. 2 puertos abiertos.');
+    print('dim', 'Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel');
+    print('dim', 'Nmap done: 1 IP address (1 host up) scanned');
     S.scanned = true;
   }
 
-  function normUrl(a){
-    a = a.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');
-    return a;
+  // extrae la URL de entre los flags (curl -s -L http://host/ruta)
+  function extractUrl(arg){
+    var toks = arg.split(/\s+/);
+    for (var i = 0; i < toks.length; i++){
+      var t = toks[i];
+      if (t.indexOf(TARGET) > -1 || /^https?:\/\//.test(t)) {
+        return t.replace(/^https?:\/\//,'').replace(/\/+$/,'');
+      }
+    }
+    return arg.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');
   }
 
   function cCurl(arg){
     if (!S.scanned) { print('bad', 'curl: no sabes que hay ahi todavia. escanea primero.'); return; }
-    var u = normUrl(arg);
+    var u = extractUrl(arg);
     if (u === TARGET || u === TARGET + '/index.html' || u === TARGET + '/') {
       WEB_INDEX.forEach(function(l){ print('out', l); });
       S.webRead = true;
@@ -537,15 +550,11 @@
 
   function cGobuster(arg){
     if (!S.scanned) { print('bad', 'gobuster: escanea el host antes de fuzzear.'); return; }
-    if (arg.indexOf(TARGET) === -1 && arg.indexOf('80') === -1 && arg.trim()==='') {
-      print('bad', 'gobuster: indica la url. ej: gobuster http://' + TARGET);
-      return;
-    }
     if (arg.indexOf(TARGET) === -1) {
-      print('bad', 'gobuster: url invalida. usa http://' + TARGET);
+      print('bad', 'gobuster: falta la url. ej: gobuster dir -u http://' + TARGET + ' -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50');
       return;
     }
-    print('dim', 'fuzzing... wordlist: common.txt');
+    print('dim', 'Gobuster v3.6  wordlist: /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  threads: 50');
     GOBUSTER.forEach(function(l){
       print(l.indexOf('portal-dev')>-1 ? 'magenta' : 'out', l);
     });
