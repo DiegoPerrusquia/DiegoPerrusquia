@@ -6,13 +6,15 @@
 
 </div>
 
-Ingeniero de TI y operaciones de seguridad. Paso el día entre levantar sistemas y buscarles la vuelta para tumbarlos, y las dos partes se retroalimentan: rompo mejor porque sé cómo se arma algo, y armo con más cuidado porque ya vi por dónde se cae.
+Ingeniero en redes y telecomunicaciones. La seguridad ofensiva la aprendí por mi cuenta y terminó siendo lo que más me mueve; las dos partes se retroalimentan, porque entender una red desde el protocolo cambia por completo cómo la ataco.
 
-Lo que de verdad me atrapa es automatizar. Un problema que resuelvo dos veces a mano ya es candidato a convertirse en script; por eso casi todo lo que escribo termina siendo una herramienta que me quita el trabajo repetido de encima.
+En ofensiva le entro a varias cosas, pero donde tengo más horas encima es en web y en entornos empresariales con Active Directory. Cuando el objetivo deja de ser una sola máquina y se vuelve una organización completa, el tablero cambia: ya no atacas una caja, lees un mapa de confianzas.
 
-En la parte ofensiva me muevo sobre la web y sobre Linux — es donde tengo más horas encima y donde vive casi todo lo que he comprometido. Cuando el objetivo deja de ser una sola máquina y se vuelve una organización completa, entra Active Directory y el tablero cambia por completo: ya no atacas una caja, lees un mapa de confianzas.
+También desarrollo. Lo que más disfruto es automatizar — un problema que resuelvo dos veces a mano ya es candidato a convertirse en script — y la parte de front, donde sí me importa cómo queda lo que entrego. Del backend entiendo lo necesario, pero no es donde me quedaría.
 
-Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
+Python, Bash y PowerShell para lo ofensivo y la automatización; C++, C# y algo de Go cuando toca bajar de nivel; TypeScript, React y Node del lado del front. Hacia donde voy ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
+
+Try Harder.
 
 <br/>
 
