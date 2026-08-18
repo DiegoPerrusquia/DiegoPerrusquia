@@ -2,7 +2,7 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0710,40:a855f7,100:f43f5e&height=170&section=header&text=Diego%20Perrusquia&fontSize=44&fontColor=ffffff&animation=fadeIn&fontAlignY=38" width="100%" alt="Diego Perrusquia"/>
 
-<img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=500&size=19&duration=3400&pause=900&color=C891FF&center=true&vCenter=true&width=800&height=60&lines=Armo+sistemas+y+luego+les+busco+la+vuelta;Hacking+web%2C+Linux+y+Active+Directory;IA+que+busca+y+correlaciona%2C+no+que+vende" alt="Armo sistemas y luego les busco la vuelta"/>
+<img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=500&size=19&duration=3400&pause=900&color=C891FF&center=true&vCenter=true&width=800&height=60&lines=TI+%2B+seguridad+ofensiva;Pentesting+web+y+Active+Directory;Automatizaci%C3%B3n+antes+que+repetir+a+mano" alt="TI + seguridad ofensiva"/>
 
 </div>
 
