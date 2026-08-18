@@ -6,13 +6,13 @@
 
 </div>
 
-Ingeniero de TI y operaciones de seguridad. Paso el día entre levantar sistemas y buscarles la vuelta para tumbarlos, y la verdad las dos mitades se alimentan: rompo mejor porque sé cómo se arma algo, y armo con más cuidado porque ya vi por dónde se cae.
+Ingeniero de TI y operaciones de seguridad. Paso el día entre levantar sistemas y buscarles la vuelta para tumbarlos, y las dos partes se retroalimentan: rompo mejor porque sé cómo se arma algo, y armo con más cuidado porque ya vi por dónde se cae.
 
-Lo que de verdad me atrapa es automatizar. Un problema que resuelvo dos veces a mano ya me está pidiendo un script a gritos; por eso casi todo lo que escribo termina convertido en una herramienta que me quita el trabajo repetido de encima.
+Lo que de verdad me atrapa es automatizar. Un problema que resuelvo dos veces a mano ya es candidato a convertirse en script; por eso casi todo lo que escribo termina siendo una herramienta que me quita el trabajo repetido de encima.
 
 En la parte ofensiva me muevo sobre la web y sobre Linux — es donde tengo más horas encima y donde vive casi todo lo que he comprometido. Cuando el objetivo deja de ser una sola máquina y se vuelve una organización completa, entra Active Directory y el tablero cambia por completo: ya no atacas una caja, lees un mapa de confianzas.
 
-Y hacia donde estoy jalando ahora: datos e IA puestos al servicio del hacking. Nada de tableros de negocio — modelos que buscan, correlacionan y encuentran lo que a un humano se le pasa.
+Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que buscan, correlacionan y encuentran lo que a un humano se le puede pasar.
 
 <br/>
 
