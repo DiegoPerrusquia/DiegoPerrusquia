@@ -17,7 +17,7 @@ Hacia donde estoy jalando ahora es datos e IA aplicados al hacking: modelos que 
 <br/>
 
 <div align="center">
-  <img src="assets/stack.svg" width="100%" alt="Lenguajes que uso, ordenados por uso: Python, Bash, PowerShell, JavaScript, SQL, C#, C++"/>
+  <img src="assets/stack.svg" width="100%" alt="Lenguajes según mis repos de GitHub, por bytes: Python, Batchfile, Dart, HTML, C++, CMake, Shell, Swift"/>
 </div>
 
 <br/>
