@@ -24,7 +24,11 @@ Y hacia donde estoy jalando ahora: datos e IA puestos al servicio del hacking. N
   <img src="assets/stack.svg" width="100%" alt="Lenguajes que uso, ordenados por uso: Python, Bash, PowerShell, JavaScript, SQL, C#, C++"/>
 </div>
 
-<br/>
+<svg width="100%" height="4" viewBox="0 0 900 4" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="rr1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a0710"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#0a0710"/></linearGradient></defs>
+<rect width="900" height="2" y="1" fill="url(#rr1)"/>
+<rect width="140" height="4" fill="#f43f5e"><animate attributeName="x" values="-140;900" dur="3.5s" repeatCount="indefinite"/></rect>
+</svg>
 
 ## Herramientas de cabecera
 
@@ -43,6 +47,33 @@ Y hacia donde estoy jalando ahora: datos e IA puestos al servicio del hacking. N
 </div>
 
 <br/>
+
+<svg width="100%" height="4" viewBox="0 0 900 4" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="rr2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a0710"/><stop offset="50%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#0a0710"/></linearGradient></defs>
+<rect width="900" height="2" y="1" fill="url(#rr2)"/>
+<rect width="140" height="4" fill="#a855f7"><animate attributeName="x" values="-140;900" dur="3.5s" repeatCount="indefinite"/></rect>
+</svg>
+
+## En números
+
+<div align="center">
+
+<img height="165" src="https://github-readme-stats.vercel.app/api?username=DiegoPerrusquia&show_icons=true&hide_border=true&bg_color=0a0710&title_color=f43f5e&icon_color=c891ff&text_color=c891ff&ring_color=a855f7" alt="stats"/>
+<img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=DiegoPerrusquia&layout=compact&hide_border=true&bg_color=0a0710&title_color=f43f5e&text_color=c891ff&langs_count=8" alt="top langs"/>
+
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=DiegoPerrusquia&hide_border=true&background=0a0710&ring=a855f7&fire=f43f5e&currStreakLabel=c891ff&sideLabels=c891ff&dates=a855f7" alt="streak"/>
+
+<img src="https://github-profile-trophy.vercel.app/?username=DiegoPerrusquia&theme=dracula&no-frame=true&row=1&margin-w=8&column=7" alt="trophies"/>
+
+</div>
+
+<br/>
+
+<svg width="100%" height="4" viewBox="0 0 900 4" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="rr3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a0710"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#0a0710"/></linearGradient></defs>
+<rect width="900" height="2" y="1" fill="url(#rr3)"/>
+<rect width="140" height="4" fill="#f43f5e"><animate attributeName="x" values="-140;900" dur="3.5s" repeatCount="indefinite"/></rect>
+</svg>
 
 ## Antes de irte, entra a una máquina
 
